@@ -11,9 +11,10 @@ module TableAnalysis
 
   class HeaderTd
     attr_accessor :name, :length
+
     def initialize(name, length)
-      @name = name
-      @length = length
+      @name = name.delete('\n').strip
+      @length = length.nil? ? 1 : length.to_i
     end
 
     def self.config(name, length)

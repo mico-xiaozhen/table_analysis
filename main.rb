@@ -36,13 +36,12 @@ module TableAnalysis
       if is_unreserved_seat?
         @table[@pointer[0]][@pointer[1]] = seat_down_value(@pointer)
         current_seat_position = @pointer.dup
+        pointer_increase
+        current_seat_position
       else
         pointer_increase
         seat_down
       end
-
-      pointer_increase
-      current_seat_position
     end
 
     # 占座
@@ -67,29 +66,3 @@ module TableAnalysis
     end
   end
 end
-
-header_content_tds = [
-  ['姓名', 1], ['年龄', 1], ['内容', 2] # [name, colspan]
-]
-
-body_content_tds = [
-  [1, 1], [1, 1], [1, 1], [1, 1], # //tr//td [rowspan, colspan]
-  [1, 2], [1, 1], [1, 1],
-  [1, 1], [1, 1], [1, 2]
-]
-
-find_name = '姓名'
-tr_sizes = 3
-
-headerTds = header_content_tds.map do |header_content_td|
-  TableAnalysis::HeaderTd.config(header_content_td[0], header_content_td[1])
-end
-
-header = TableAnalysis::Header.config(find_name, headerTds)
-table = TableAnalysis::Table.config(tr_sizes, header)
-
-body_tds = body_content_tds.map do |body_td|
-  TableAnalysis::BodyTd.config(body_td[0], body_td[1])
-end
-
-p TableAnalysis::Main.new(header, table, body_tds).entrance

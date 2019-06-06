@@ -3,8 +3,9 @@ module TableAnalysis
     attr_accessor :rowspan, :colspan
 
     def initialize(rowspan, colspan)
-      @rowspan = rowspan
-      @colspan = colspan
+      @rowspan = rowspan.nil? ? 1 : rowspan.to_i
+
+      @colspan = colspan.nil? ? 1 : colspan.to_i
     end
 
     def self.config(rowspan, colspan)
