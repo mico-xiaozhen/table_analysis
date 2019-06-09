@@ -29,13 +29,13 @@ tables.each do |table|
   headerTds = header_content_tds.map do |header_content_td|
     TableAnalysis::HeaderTd.config(header_content_td[0], header_content_td[1])
   end
-
+  # p headerTds
   header = TableAnalysis::Header.config(find_name, headerTds)
   table = TableAnalysis::Table.config(tr_sizes, header)
-
+  # p header 
   body_tds = body_content_tds.map do |body_td|
     TableAnalysis::BodyTd.config(body_td[0], body_td[1])
   end
-
+  # p body_tds 
   p TableAnalysis::Main.new(header, table, body_tds).entrance
 end

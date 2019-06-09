@@ -46,9 +46,15 @@ module TableAnalysis
 
     # 占座
     def reserved_seat(current_seat_position, rowspan, colspan)
-      @table[current_seat_position[0] + rowspan - 1][current_seat_position[1]] = -1 if rowspan > 1
-
-      @table[current_seat_position[0]][current_seat_position[1] + colspan - 1] = -1 if colspan > 1
+      (rowspan - 1).times do |n|
+        @table[current_seat_position[0] + n + 1][current_seat_position[1]] = -1
+      end
+      (colspan - 1).times do |m|
+        @table[current_seat_position[0]][current_seat_position[1] + m + 1] = -1
+        (rowspan - 1).times do |n|
+          @table[current_seat_position[0] + n + 1][current_seat_position[1] + m + 1] = -1
+        end
+      end
     end
 
     # 身份值
