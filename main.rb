@@ -1,4 +1,3 @@
-require_relative 'double_dimensional_array'
 require_relative 'header'
 require_relative 'body'
 require_relative 'table'
