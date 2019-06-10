@@ -12,7 +12,7 @@ tables.each do |table|
       tr.xpath('./td').each do |td|
         header_name = td.content
         colspan = td.attribute('colspan')&.value
-        header_content_tds <<  [header_name, colspan] 
+        header_content_tds << [header_name, colspan] 
       end
     else
       tr_sizes += 1 
