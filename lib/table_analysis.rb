@@ -46,7 +46,6 @@ module TableAnalysis
 
       table_maps = header_map + content_maps
 
-      p table_maps
       table_maps
     end
   end
