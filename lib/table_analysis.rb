@@ -8,7 +8,7 @@ module TableAnalysis
       doc = Nokogiri::HTML(html, nil, 'utf-8')
       # 多个table,仅处理第一个
       table = doc.xpath('//table')[0]
-
+      return false if table.size = 0
       header_content_tds = []
       body_content_tds = []
       body_tr_size = 0
