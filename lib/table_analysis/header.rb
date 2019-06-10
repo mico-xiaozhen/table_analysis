@@ -1,11 +1,15 @@
 module TableAnalysis
   class Header
-    def self.config(name, *trs)
+    def self.config(selected_cols, *trs)
       result = []
       trs.flatten.each do |tr|
-        result << Array.new(tr.length) { tr.name.to_s == name.to_s ? 1 : 0 }
+        result << Array.new(tr.length)
       end
-      result.flatten
+      result = result.flatten
+      selected_cols.each do |selected_col|
+        result[selected_col - 1] = 1
+      end
+      result.map! { |r| r.nil? ? 0 : r }
     end
   end
 

@@ -3,7 +3,7 @@ require_relative 'body'
 require_relative 'table'
 
 module TableAnalysis
-  class Main
+  class Core
     attr_accessor :header, :table, :body_tds, :pointer, :x_max, :y_max
 
     def initialize(header, table, body_tds)
@@ -21,7 +21,6 @@ module TableAnalysis
         current_seat_position = seat_down
         reserved_seat(current_seat_position, body_td.rowspan, body_td.colspan) if body_td.reserved_seat?
       end
-
       @table
     end
 
@@ -33,7 +32,7 @@ module TableAnalysis
     # 坐下
     def seat_down
       if is_unreserved_seat?
-        @table[@pointer[0]][@pointer[1]] = seat_down_value(@pointer)
+        @table[@pointer[0]][@pointer[1]] = seat_down_value
         current_seat_position = @pointer.dup
         pointer_increase
         current_seat_position
@@ -57,8 +56,8 @@ module TableAnalysis
     end
 
     # 身份值
-    def seat_down_value(position)
-      @header[position[1]]
+    def seat_down_value
+      @header[@pointer[1]]
     end
 
     def pointer_increase
