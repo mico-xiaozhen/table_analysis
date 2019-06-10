@@ -3,7 +3,7 @@ require_relative 'table_analysis/version'
 require 'nokogiri'
 module TableAnalysis
   class Main
-    def self.generator(html, *selected_cols)
+    def self.generator(html, selected_row, *selected_cols)
       selected_cols = selected_cols.flatten 
       doc = Nokogiri::HTML(html, nil, 'utf-8')
       # 多个table,仅处理第一个
@@ -13,13 +13,13 @@ module TableAnalysis
       body_content_tds = []
       body_tr_size = 0
       table.xpath('./tr').each_with_index do |tr, tr_index|
-        if tr_index == 0
+        if tr_index == selected_row.to_i - 1
           tr.xpath('./td').each do |td|
             header_name = td.content
             colspan = td.attribute('colspan')&.value
             header_content_tds << [header_name, colspan]
           end
-        else
+        elsif tr_index >= selected_row.to_i
           body_tr_size += 1
           tr.xpath('./td').each_with_index do |td, td_index|
             rowspan = td.attribute('rowspan')&.value 
