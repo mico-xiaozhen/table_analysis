@@ -1,4 +1,3 @@
-require_relative 'main'
 require 'nokogiri'
 
 doc = File.open('file/demo2.html') { |f| Nokogiri::HTML(f, nil, 'utf-8') }

@@ -1,5 +1,3 @@
-require_relative 'main'
-
 header_content_tds = [
   ['姓名', 1], ['年龄', 1], ['内容', 2] # [name, colspan]
 ]
