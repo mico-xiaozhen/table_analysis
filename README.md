@@ -22,7 +22,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+doc_table_html = File.read('file/demo1.html')
+
+TableAnalysis::Main.generator(doc_table_html, header_start_row, selected_rows)
 
 ## Development
 
