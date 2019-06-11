@@ -25,7 +25,7 @@ Or install it yourself as:
 doc_table_html = File.read('file/demo1.html')
 
 TableAnalysis::Main.generator(doc_table_html, header_start_row, selected_rows)
-
+header_start_row, selected_rows 都是从1开始 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
