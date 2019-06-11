@@ -14,15 +14,15 @@ module TableAnalysis
   end
 
   class HeaderTd
-    attr_accessor :name, :length
+    attr_accessor :rowspan, :length
 
-    def initialize(name, length)
-      @name = name.delete('\n').strip
+    def initialize(rowspan, length)
+      @rowspan = rowspan.nil? ? 1 : rowspan.to_i
       @length = length.nil? ? 1 : length.to_i
     end
 
-    def self.config(name, length)
-      new(name, length)
+    def self.config(rowspan, length)
+      new(rowspan, length)
     end
   end
 end

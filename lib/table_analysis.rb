@@ -11,15 +11,25 @@ module TableAnalysis
       return false if table.nil?
       header_content_tds = []
       body_content_tds = []
+      header_body_content_tds = []
       body_tr_size = 0
+      tr_rows = 1
       table.xpath('./thead/tr|./tbody/tr').each_with_index do |tr, tr_index|
         if tr_index == selected_row.to_i - 1
           tr.xpath('./td').each do |td|
-            header_name = td.content
             colspan = td.attribute('colspan')&.value
-            header_content_tds << [header_name, colspan]
+            rowspan = td.attribute('rowspan')&.value
+            header_content_tds << [rowspan, colspan]
+            header_body_content_tds << [rowspan, colspan]
+            tr_rows = rowspan.to_i.dup if !rowspan.nil? && rowspan.to_i > 1 && tr_rows < rowspan.to_i 
           end
-        elsif tr_index >= selected_row.to_i
+        elsif tr_index > selected_row.to_i - 1 && tr_index < selected_row.to_i - 1 + tr_rows
+          tr.xpath('./td').each do |td|
+            rowspan = td.attribute('rowspan')&.value 
+            colspan = td.attribute('colspan')&.value
+            header_body_content_tds << [rowspan, colspan]
+          end
+        elsif tr_index >= selected_row.to_i - 1 + tr_rows
           body_tr_size += 1
           tr.xpath('./td').each_with_index do |td, td_index|
             rowspan = td.attribute('rowspan')&.value 
@@ -34,17 +44,22 @@ module TableAnalysis
       end
 
       header = TableAnalysis::Header.config(selected_cols, header_tds)
-      table = TableAnalysis::Table.config(body_tr_size, header)
 
+      table = TableAnalysis::Table.config(body_tr_size, header)
       body_tds = body_content_tds.map do |body_td|
         TableAnalysis::BodyTd.config(body_td[0], body_td[1])
       end
 
       content_maps = TableAnalysis::Core.new(header, table, body_tds).entrance
 
-      header_map = [Array.new(header_tds.size){0}]
+      header_table = TableAnalysis::Table.config(tr_rows, header)
+      header_body_tds = header_body_content_tds.map do |body_td|
+        TableAnalysis::BodyTd.config(body_td[0], body_td[1])
+      end
+      
+      header_maps = TableAnalysis::Core.new(header, header_table, header_body_tds).entrance
 
-      table_maps = header_map + content_maps
+      table_maps = header_maps + content_maps
 
       table_maps
     end
