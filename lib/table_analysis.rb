@@ -12,7 +12,7 @@ module TableAnalysis
       header_content_tds = []
       body_content_tds = []
       body_tr_size = 0
-      table.xpath('.//tr').each_with_index do |tr, tr_index|
+      table.xpath('./thead/tr|./tbody/tr').each_with_index do |tr, tr_index|
         if tr_index == selected_row.to_i - 1
           tr.xpath('./td').each do |td|
             header_name = td.content
