@@ -66,6 +66,8 @@ module TableAnalysis
       elsif @pointer[1] == @y_max && @pointer[0] < @x_max
         @pointer[1] = 0
         @pointer[0] += 1
+      elsif @pointer[1] == @y_max && @pointer[0] == @x_max
+        raise 'header_start_row取值错误'
       end
     end
   end

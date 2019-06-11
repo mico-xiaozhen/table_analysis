@@ -3,9 +3,9 @@ require_relative 'table_analysis/version'
 require 'nokogiri'
 module TableAnalysis
   class Main
-    def self.generator(html, selected_row, *selected_cols)
+    def self.generator(doc_table_html, header_start_row, *selected_cols)
       selected_cols = selected_cols.flatten 
-      doc = Nokogiri::HTML(html, nil, 'utf-8')
+      doc = Nokogiri::HTML(doc_table_html, nil, 'utf-8')
       # 多个table,仅处理第一个
       table = doc.xpath('//table')[0]
       return false if table.nil?
@@ -21,7 +21,7 @@ module TableAnalysis
       end
 
       select_table_tr.each_with_index do |tr, tr_index|
-        if tr_index == selected_row.to_i - 1
+        if tr_index == header_start_row.to_i - 1
           tr.xpath('./td').each do |td|
             colspan = td.attribute('colspan')&.value
             rowspan = td.attribute('rowspan')&.value
@@ -29,13 +29,13 @@ module TableAnalysis
             header_body_content_tds << [rowspan, colspan]
             tr_rows = rowspan.to_i.dup if !rowspan.nil? && rowspan.to_i > 1 && tr_rows < rowspan.to_i 
           end
-        elsif tr_index > selected_row.to_i - 1 && tr_index < selected_row.to_i - 1 + tr_rows
+        elsif tr_index > header_start_row.to_i - 1 && tr_index < header_start_row.to_i - 1 + tr_rows
           tr.xpath('./td').each do |td|
             rowspan = td.attribute('rowspan')&.value 
             colspan = td.attribute('colspan')&.value
             header_body_content_tds << [rowspan, colspan]
           end
-        elsif tr_index >= selected_row.to_i - 1 + tr_rows
+        elsif tr_index >= header_start_row.to_i - 1 + tr_rows
           body_tr_size += 1
           tr.xpath('./td').each_with_index do |td, td_index|
             rowspan = td.attribute('rowspan')&.value 
