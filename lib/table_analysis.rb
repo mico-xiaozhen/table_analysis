@@ -15,7 +15,7 @@ module TableAnalysis
       body_tr_size = 0
       tr_rows = 1
 
-      select_table_tr = table.xpath('./thead/tr|./tbody/tr') 
+      select_table_tr = table.xpath('./thead/tr|./tbody/tr')
       if select_table_tr.empty?
         select_table_tr = table.xpath('./tr')
       end
