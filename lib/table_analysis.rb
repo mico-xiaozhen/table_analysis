@@ -10,10 +10,15 @@ module TableAnalysis
       table = doc.xpath('//table')[0]
       return false if table.nil?
       header_content_tds = []
+
       body_content_tds = []
-      header_body_content_tds = []
       body_tr_size = 0
+
+      header_body_content_tds = []
       tr_rows = 1
+
+      upheader_content_tds = []
+      upheader_tr_size = 0
 
       select_table_tr = table.xpath('./thead/tr|./tbody/tr')
       if select_table_tr.empty?
@@ -21,7 +26,14 @@ module TableAnalysis
       end
 
       select_table_tr.each_with_index do |tr, tr_index|
-        if tr_index == header_start_row.to_i - 1
+        if tr_index < header_start_row.to_i - 1
+          upheader_tr_size += 1
+          tr.xpath('./td').each_with_index do |td, td_index|
+            rowspan = td.attribute('rowspan')&.value 
+            colspan = td.attribute('colspan')&.value
+            upheader_content_tds << [rowspan, colspan]
+          end
+        elsif tr_index == header_start_row.to_i - 1
           tr.xpath('./td').each do |td|
             colspan = td.attribute('colspan')&.value
             rowspan = td.attribute('rowspan')&.value
@@ -48,24 +60,33 @@ module TableAnalysis
       header_tds = header_content_tds.map do |header_content_td|
         TableAnalysis::HeaderTd.config(header_content_td[0], header_content_td[1])
       end
-
       header = TableAnalysis::Header.config(selected_cols, header_tds)
 
-      table = TableAnalysis::Table.config(body_tr_size, header)
+      body_tr_table = TableAnalysis::Table.config(body_tr_size, header)
       body_tds = body_content_tds.map do |body_td|
         TableAnalysis::BodyTd.config(body_td[0], body_td[1])
       end
+      content_maps = TableAnalysis::Core.new(header, body_tr_table, body_tds).entrance
 
-      content_maps = TableAnalysis::Core.new(header, table, body_tds).entrance
+      upheader_table = TableAnalysis::Table.config(upheader_tr_size, header)
+      upheader_tds = upheader_content_tds.map do |body_td|
+        TableAnalysis::BodyTd.config(body_td[0], body_td[1])
+      end
+      upheader_maps = nil
+      upheader_maps = TableAnalysis::Core.new(header, upheader_table, upheader_tds).entrance unless upheader_table.empty?
 
       header_table = TableAnalysis::Table.config(tr_rows, header)
       header_body_tds = header_body_content_tds.map do |body_td|
         TableAnalysis::BodyTd.config(body_td[0], body_td[1])
       end
-
       header_maps = TableAnalysis::Core.new(header, header_table, header_body_tds).entrance
 
-      table_maps = header_maps + content_maps
+      table_maps = 
+        if upheader_maps.nil?
+          header_maps + content_maps
+        else 
+          upheader_maps + header_maps + content_maps
+        end
 
       table_maps
     end
