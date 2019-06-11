@@ -14,7 +14,13 @@ module TableAnalysis
       header_body_content_tds = []
       body_tr_size = 0
       tr_rows = 1
-      table.xpath('./thead/tr|./tbody/tr').each_with_index do |tr, tr_index|
+
+      select_table_tr = table.xpath('./thead/tr|./tbody/tr') 
+      if select_table_tr.empty?
+        select_table_tr = table.xpath('./tr')
+      end
+
+      select_table_tr.each_with_index do |tr, tr_index|
         if tr_index == selected_row.to_i - 1
           tr.xpath('./td').each do |td|
             colspan = td.attribute('colspan')&.value
@@ -56,7 +62,7 @@ module TableAnalysis
       header_body_tds = header_body_content_tds.map do |body_td|
         TableAnalysis::BodyTd.config(body_td[0], body_td[1])
       end
-      
+
       header_maps = TableAnalysis::Core.new(header, header_table, header_body_tds).entrance
 
       table_maps = header_maps + content_maps
