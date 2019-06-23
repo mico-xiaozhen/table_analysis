@@ -28,13 +28,13 @@ module TableAnalysis
       select_table_tr.each_with_index do |tr, tr_index|
         if tr_index < header_start_row.to_i - 1
           upheader_tr_size += 1
-          tr.xpath('./td').each_with_index do |td, td_index|
+          tr.xpath('./td|./th').each_with_index do |td, td_index|
             rowspan = td.attribute('rowspan')&.value 
             colspan = td.attribute('colspan')&.value
             upheader_content_tds << [rowspan, colspan]
           end
         elsif tr_index == header_start_row.to_i - 1
-          tr.xpath('./td').each do |td|
+          tr.xpath('./td|./th').each do |td|
             colspan = td.attribute('colspan')&.value
             rowspan = td.attribute('rowspan')&.value
             header_content_tds << [rowspan, colspan]
@@ -42,14 +42,14 @@ module TableAnalysis
             tr_rows = rowspan.to_i.dup if !rowspan.nil? && rowspan.to_i > 1 && tr_rows < rowspan.to_i 
           end
         elsif tr_index > header_start_row.to_i - 1 && tr_index < header_start_row.to_i - 1 + tr_rows
-          tr.xpath('./td').each do |td|
+          tr.xpath('./td|./th').each do |td|
             rowspan = td.attribute('rowspan')&.value 
             colspan = td.attribute('colspan')&.value
             header_body_content_tds << [rowspan, colspan]
           end
         elsif tr_index >= header_start_row.to_i - 1 + tr_rows
           body_tr_size += 1
-          tr.xpath('./td').each_with_index do |td, td_index|
+          tr.xpath('./td|./th').each_with_index do |td, td_index|
             rowspan = td.attribute('rowspan')&.value 
             colspan = td.attribute('colspan')&.value
             body_content_tds << [rowspan, colspan]

@@ -1,5 +1,5 @@
 require './lib/table_analysis.rb'
 
-doc = File.read('file/demo1.html')
+doc = File.read('file/demo3.html')
 
-p TableAnalysis::Main.generator(doc, 2, 1)
+p TableAnalysis::Main.generator(doc, 1, 2)
